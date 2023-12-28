@@ -1,9 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { BsSearch } from 'react-icons/bs';
+import { FaBars } from "react-icons/fa";
+import Menu from './Menu';
 
 function Navbar() {
-  const user = false;
+
+  const [menu, setMenu] = useState(false)
+
+  const showMenu = () => {
+    setMenu(!menu)
+  }
+
+  const user = false
 
   return (
     <div className='flex flex-col md:flex-row items-center justify-between px-4 md:px-[200px] py-4'>
@@ -25,7 +34,7 @@ function Navbar() {
       </div>
 
       {/* Links */}
-      <div className='flex items-center justify-center space-x-2 md:space-x-4'>
+      <div className='hidden md:flex items-center justify-center space-x-2 md:space-x-4'>
         {user ? (
           <h3>
             <Link to='/write'>Write</Link>
@@ -36,12 +45,19 @@ function Navbar() {
           </h3>
         )}
         {user ? (
-          <h3>Profile</h3>
+          <div onClick={showMenu}>
+            {menu && <Menu/>}
+            <p className='cursor-pointer relative'><FaBars /></p>
+          </div>
         ) : (
           <h3>
             <Link to='/register'>Register</Link>
           </h3>
         )}
+      </div>
+      <div className='md:hidden text-lg' onClick={showMenu}>
+        <p className='cursor-pointer relative'><FaBars /></p>
+        {menu && <Menu/>}
       </div>
     </div>
   );
