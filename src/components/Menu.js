@@ -1,8 +1,22 @@
-import React from 'react'
+import React, { useContext } from 'react';
+import { UserContext } from '../context/UserContext';
+import axios from "axios";
+import { URL } from '../url';
 
 function Menu() {
 
-    const user = false
+    const {user} = useContext(UserContext);
+    const {setUser} = useContext(UserContext);
+
+    const handleLogout = async() => {
+      try {
+        const res = await axios.get(URL+"/api/auth/logout",{withCredentials: true});
+        console.log(res);
+        setUser(null);
+      } catch(err) {
+        console.log(err);
+      }
+    }
 
   return (
     <>
@@ -29,7 +43,12 @@ function Menu() {
         }
         {
             user &&
-            <h3 className='text-white text-sm hover:text-gray-500 cursor-pointer'>Logout</h3>
+            <h3 
+              className='text-white text-sm hover:text-gray-500 cursor-pointer'
+              onClick={handleLogout}
+            >
+              Logout
+            </h3>
         }
       </div>
     </>

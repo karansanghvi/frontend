@@ -1,18 +1,23 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useContext, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { BsSearch } from 'react-icons/bs';
 import { FaBars } from "react-icons/fa";
 import Menu from './Menu';
+import { UserContext } from '../context/UserContext';
 
 function Navbar() {
-
-  const [menu, setMenu] = useState(false)
+  
+  const [prompt, setPrompt] = useState("");
+  const [menu, setMenu] = useState(false);
+  const navigate = useNavigate();
+  console.log(prompt);
 
   const showMenu = () => {
-    setMenu(!menu)
+    setMenu(!menu);
   }
 
-  const user = false
+  const {user} = useContext(UserContext);
+  // console.log(user);
 
   return (
     <div className='flex flex-col md:flex-row items-center justify-between px-4 md:px-[200px] py-4'>
@@ -23,13 +28,17 @@ function Navbar() {
 
       {/* Search */}
       <div className='flex justify-center items-center space-x-0 mb-2 md:mb-0'>
-        <p>
+        <p 
+          className='cursor-pointer'
+          onClick={() => navigate(prompt?"?search="+prompt:navigate("/"))}
+        >
           <BsSearch />
         </p>
         <input
           className='outline-none px-3'
           placeholder='Search a post'
           type='text'
+          onChange={(e) => setPrompt(e.target.value)}
         />
       </div>
 
