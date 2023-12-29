@@ -144,13 +144,13 @@ function PostDetails() {
           <div className='w-full flex flex-col mt-4 md:flex-row'>
             <input 
                 type="text" 
-                className='md:w-[80%] outline-none px-4 py-2 mt-4 md:mt-0'
+                className='md:w-[80%] outline-none px-4 py-2 mt-4 md:mt-0 border border-black rounded-lg mr-2'
                 placeholder='Write a comment'
                 onChange={(e) => setComment(e.target.value)}
             />
             <button 
               onClick={postComment}
-              className='bg-black text-sm text-white px-2 py-2 md:w-[20%] mt-4 md:mt-0'
+              className='bg-black text-sm text-white px-2 py-2 md:w-[20%] mt-4 md:mt-0 rounded-lg'
             >
                 Add Comment
             </button>

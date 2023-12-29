@@ -1,33 +1,43 @@
-import React from 'react'
+import React, { useContext } from 'react';
+import { Link } from 'react-router-dom';
+import { UserContext } from '../context/UserContext';
 
 function Footer() {
+  const { user } = useContext(UserContext);
+
   return (
-   <>
-    <div className='mt-8 w-full bg-black px-8 md:px-[500px] flex md:flex-row flex-col space-y-4 md:space-y-0 items-start md:justify-between text-sm md:text-md py-8'>
-      <div className='flex flex-col text-white'>
-        <p>Featured Blogs</p>
-        <p>Most Viewed</p>
-        <p>Readers Choice</p>
-      </div>
-
-      <div className='flex flex-col text-white'>
-        <p>Forum</p>
-        <p>Support</p>
-        <p>Recent Posts</p>
-      </div>
-
-      <div className='flex flex-col text-white'>
-        <p>Privacy Policy</p>
-        <p>About Us</p>
-        <p>Terms & Conditions</p>
-        <p>Terms Of Service</p>
-      </div>
-    </div>
-    <p className='py-2 pb-2 text-center text-white bg-black'>
-      All rights reserved @InsightfulBytes | Created By Karan
-    </p>
-   </>
-  )
+    <>
+      <footer className="bg-white rounded-lg shadow dark:bg-gray-900 m-4">
+        <div className="w-full max-w-screen-xl mx-auto p-4 md:py-8">
+          <div className="sm:flex sm:items-center sm:justify-between">
+            <p className="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">
+              <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Insightful Bytes</span>
+            </p>
+            <ul className="flex flex-wrap items-center mb-6 text-sm font-medium text-gray-500 sm:mb-0 dark:text-gray-400">
+              <li>
+                {user ? (
+                  <Link to="/write" className="hover:underline me-4 md:me-6">Write A Post</Link>
+                ) : (
+                  <Link to="/login" className="hover:underline me-4 md:me-6">Login</Link>
+                )}
+              </li>
+              <li>
+                {user ? (
+                  <div>
+                    {/* Render additional user-specific links or actions */}
+                  </div>
+                ) : (
+                  <Link to="/register" className="hover:underline me-4 md:me-6">Register</Link>
+                )}
+              </li>
+            </ul>
+          </div>
+          <hr className="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
+          <span className="block text-sm text-gray-500 sm:text-center dark:text-gray-400">© 2023 <a href="#" className="hover:underline">All Rights Reserved</a> | Created By Karan</span>
+        </div>
+      </footer>
+    </>
+  );
 }
 
-export default Footer
+export default Footer;
