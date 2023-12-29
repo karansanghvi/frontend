@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import React, { useContext, useEffect, useState } from 'react'
+import { Link, useLocation } from 'react-router-dom'
 import HomePost from '../components/HomePost'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import Loader from '../components/Loader'
 import axios from "axios";
 import { URL } from "../url";
+import { UserContext } from '../context/UserContext'
 
 function Home() {
 
@@ -14,6 +15,8 @@ function Home() {
   const [posts, setPosts] = useState([]);
   const [noResults, setNoResults] = useState(false);
   const [loader, setLoader] = useState(false);
+  const {user} = useContext(UserContext);
+  // console.log(user);
 
   const fetchPosts = async() => {
     setLoader(true);
@@ -46,10 +49,14 @@ function Home() {
             <Loader/>
           </div>:
           !noResults?posts.map((post) => (
-            <HomePost
-              key={post._id}
-              post={post}
-            />
+            <>
+              <Link to={user?`/posts/post/${post._id}`:"/login"}>
+                <HomePost
+                  key={post._id}
+                  post={post}
+                />
+              </Link>
+            </>
           )):<h3 className='text-center font-bold mt-40 text-6xl'>
             No Posts Available
           </h3>

@@ -1,12 +1,23 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import { ImCross } from 'react-icons/im'
+import { UserContext } from '../context/UserContext';
+import axios from "axios"
+import { URL } from '../url';
+import { useNavigate } from 'react-router-dom';
 
 function CreatePost() {
 
+  const [title, setTitle] = useState("");
+  const [desc, setDesc] = useState("");
+  const [file, setFile] = useState(null);
+  const {user} = useContext(UserContext);
   const [cat, setCat] = useState("");
   const [cats, setCats] = useState([]);
+
+  console.log(file);
+  const navigate = useNavigate();
 
   const addCategory = () => {
     let updateCats = [...cats]
@@ -21,6 +32,42 @@ function CreatePost() {
     setCats(updatedCats)
   }
 
+  const handleCreate = async (e) => {
+    e.preventDefault();
+    const post = {
+      title,
+      desc,
+      username: user.username,
+      userId: user._id,
+      categories: cats
+    }
+    if (file) {
+      const data = new FormData();
+      const filename = Date.now() + file.name;
+      data.append("img", filename);
+      data.append("file", file);
+      post.photo = filename;
+      console.log(data);
+
+      // image upload
+      try {
+        const imgUpload = await axios.post(URL+"/api/upload",data);
+        // console.log(imgUpload.data);
+      } catch(err) {
+        console.log(err);
+      }
+    }
+
+    // post upload
+    try {
+      const res = await axios.post(URL+"/api/posts/create",post,{withCredentials: true});
+      navigate("/posts/post/" + res.data._id);
+      // console.log(res.data);
+    } catch(err) {
+      console.log(err);
+    }
+  }
+
   return (
     <>
       <div>
@@ -32,10 +79,12 @@ function CreatePost() {
                         type="text" 
                         className='px-4 py-2 outline-none'
                         placeholder='Enter post title'
+                        onChange={(e) => setTitle(e.target.value)}
                     />
                     <input 
                         type="file" 
                         className='px-4'
+                        onChange={(e) => setFile(e.target.files[0])}
                     />
                     <div className='flex flex-col'>
                       <div className='flex items-center space-x-4 md:space-x-8'>
@@ -74,8 +123,11 @@ function CreatePost() {
                       cols={30}
                       className='px-4 py-2 outline-none'
                       placeholder='Enter post description'
+                      onChange={(e) => setDesc(e.target.value)}
                     />
-                    <button className='bg-black w-full md:w-[20%] mx-auto text-white font-semibold px-4 py-2 md:text-xl text-lg'>
+                    <button 
+                      onClick={handleCreate}
+                      className='bg-black w-full md:w-[20%] mx-auto text-white font-semibold px-4 py-2 md:text-xl text-lg'>
                       Create
                     </button>
                 </form>

@@ -1,50 +1,87 @@
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { BiEdit } from 'react-icons/bi';
 import { MdDelete } from 'react-icons/md';
 import Comment from '../components/Comment';
+import { useParams } from 'react-router-dom';
+import axios from "axios"
+import { URL, IF } from '../url';
+import { UserContext } from '../context/UserContext';
+import Loader from '../components/Loader'
 
 function PostDetails() {
+
+  const postId = useParams().id;
+  const [post, setPost] = useState({});
+  const {user} = useContext(UserContext);
+  const [loader, setLoader] = useState(false);
+
+  const fetchPosts = async()=> {
+    setLoader(true);
+    try {
+      const res = await axios.get(URL+"/api/posts/"+postId);
+      // console.log(res.data);
+      setPost(res.data);
+      setLoader(false);
+    } catch(err) {
+      console.log(err);
+      setLoader(true);
+    }
+  }
+
+  useEffect(() => {
+    fetchPosts();
+  }, [postId])
+
   return (
     <>
       <div>
         <Navbar />
-        <div className='px-8 md:px-[200px] mt-8'>
+        {
+          loader?<div className='h-[80vh] flex justify-center items-center'><Loader/></div>:
+          <div className='px-8 md:px-[200px] mt-8'>
           <div className='flex justify-between items-center'>
             <h1 className='text-2xl font-bold text-black md:text-3xl'>
-              10 Uses Of Artificial Intelligence In Day To Day Life
+              {post.title}
             </h1>
-            <div className='flex items-center justify-center space-x-2'>
-              <p>
-                <BiEdit />
-              </p>
-              <p>
-                <MdDelete />
-              </p>
-            </div>
+            {
+              user?._id === post.userId &&
+              <div className='flex items-center justify-center space-x-2'>
+                <p>
+                  <BiEdit />
+                </p>
+                <p>
+                  <MdDelete />
+                </p>
+              </div>
+            }
           </div>
           <div className='flex items-center justify-between mt-2 md:mt-4'>
-            <p>@karansanghvi</p>
+            <p>{post.username}</p>
             <div className='flex space-x-2'>
-              <p>16/06/2023</p>
-              <p>16:45</p>
+              <p>{new Date(post.updatedAt).toString().slice(0,15)}</p>
+              <p>{new Date(post.updatedAt).toString().slice(16,24)}</p>
             </div>
           </div>
           <img
-            src='https://www.analyticsinsight.net/wp-content/webp-express/webp-images/uploads/2021/12/Top-10-real-life-applications-of-artificial-intelligence.jpg.webp'
+            src={IF+post.photo}
             alt=''
             className='w-full mx-auto mt-8'
           />
           <p className='mx-auto mt-8'>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed odio dui, hendrerit sit amet tincidunt ac, euismod sed risus. Nam vitae venenatis dui. Morbi sollicitudin blandit malesuada. Nunc tincidunt tortor dolor, quis malesuada dui pellentesque faucibus. Pellentesque ullamcorper neque non suscipit porttitor. Morbi quis mauris sed lectus accumsan pharetra a feugiat nunc. Nullam porta nunc et vestibulum cursus. Sed magna nulla, dapibus a tincidunt eu, cursus vel lorem. Curabitur et sem rutrum, mattis massa vitae, cursus turpis. Suspendisse ut quam quis urna varius pulvinar vel et nisl. Nam sit amet est iaculis, cursus dui ac, pulvinar orci. Morbi ac ex et justo congue egestas.
-            Mauris dapibus quis neque imperdiet accumsan. Vivamus malesuada, tortor id dapibus elementum, quam diam interdum nunc, vel blandit leo orci et nisi. Ut placerat ipsum et metus dictum sagittis. Vivamus sed libero cursus, aliquet dui sed, aliquam massa. Nullam hendrerit faucibus ullamcorper. Phasellus in ex arcu. Aliquam ultricies dolor ac urna mollis, a auctor ligula volutpat. Praesent rutrum mattis purus. Nunc volutpat vitae sem a scelerisque. Suspendisse sit amet augue nec ex lacinia fermentum. Donec ut felis malesuada, aliquam justo id, pulvinar nulla. Nunc posuere vehicula felis, vitae dapibus dui imperdiet sit amet.
+            {post.desc}
           </p>
           <div className='flex items-center mt-8 space-x-4 font-semibold'>
             <p>Categories:</p>
             <div className='flex justify-center items-center space-x-2'>
-              <div className='bg-gray-300 rounded-lg px-3 py-1'>Tech</div>
-              <div className='bg-gray-300 rounded-lg px-3 py-1'>AI</div>
+              {post.categories?.map((c,i) => (
+                <div 
+                  key={i}
+                  className='bg-gray-300 rounded-lg px-3 py-1'>
+                    {c}
+                  </div>
+              ))}
             </div>
           </div>
           <div className='flex flex-col mt-4'>
@@ -64,6 +101,7 @@ function PostDetails() {
             </button>
           </div>
         </div>
+        }
         <Footer />
       </div>
     </>

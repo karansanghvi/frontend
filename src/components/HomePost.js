@@ -1,4 +1,5 @@
 import React from 'react';
+import {IF} from '../url'
 
 function HomePost({ post }) {
   return (
@@ -6,7 +7,7 @@ function HomePost({ post }) {
       {/* left */}
       <div className='w-full md:w-[35%] h-[200px] flex justify-center items-center'>
         <img
-          src={post.photo}
+          src={IF+post.photo}
           alt=''
           className='h-full w-full object-cover rounded-md'
         />
